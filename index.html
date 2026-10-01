@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f0dd">
+    <meta name="description" content="Game puzzle edukasi untuk belajar urutan organ pencernaan manusia.">
+    <meta property="og:title" content="Petualangan Pencernaan">
+    <meta property="og:description" content="Bantu enam organ menemukan urutan perjalanan makanan!">
+    <title>Petualangan Pencernaan — Game Puzzle</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f7f0dd;
+        --paper-deep: #eee4cb;
+        --card: #fffdf5;
+        --ink: #274d43;
+        --muted: #69786c;
+        --line: #ded2b8;
+        --green: #347d68;
+        --green-dark: #286b58;
+        --green-pale: #e4f0e5;
+        --coral: #d9795e;
+        --coral-pale: #fae8df;
+        --gold: #e6bc6e;
+        --gold-pale: #f7edcf;
+        --danger: #bd594b;
+        --shadow: 0 12px 30px rgba(64, 71, 49, .08);
+        font-family: "Trebuchet MS", "Avenir Next", Arial, sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(ellipse at 80% 8%, #fff9e9 0, transparent 40%), var(--paper); }
+      button { font: inherit; }
+      button:focus-visible, [tabindex="0"]:focus-visible { outline: 3px solid #3d9279; outline-offset: 3px; }
+      .wrap { width: min(1120px, calc(100% - 44px)); margin-inline: auto; }
+      .topbar { min-height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(117, 113, 87, .22); }
+      .brand { display: flex; gap: 12px; align-items: center; }
+      .brand-mark { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid #cbd7c4; border-radius: 15px; background: #eaf1e3; }
+      .brand-mark svg { width: 32px; height: 32px; }
+      .brand-name { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+      .brand-caption { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; margin-top: 3px; }
+      .top-actions { display: flex; align-items: center; gap: 14px; }
+      .score-chip { padding: 9px 14px; border: 1px solid #e8d9aa; border-radius: 999px; background: #fff7df; font-weight: 700; font-size: 14px; }
+      .score-chip strong { margin-left: 4px; }
+      .text-button { border: 0; background: transparent; color: var(--muted); font-weight: 700; cursor: pointer; padding: 9px; }
+      .page { padding-top: 54px; padding-bottom: 24px; }
+      .hero { min-height: 425px; display: grid; grid-template-columns: 1fr 1fr; gap: 42px; align-items: center; }
+      .eyebrow { display: flex; align-items: center; gap: 9px; color: #61796b; font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+      .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 4px #f5dfcc; }
+      h1 { font-size: clamp(42px, 5.2vw, 66px); line-height: .99; letter-spacing: -.055em; margin: 24px 0 18px; }
+      h1 span { color: var(--coral); }
+      .hero-copy > p, .game-heading p { max-width: 470px; color: var(--muted); font-size: 16px; line-height: 1.75; margin: 0; }
+      .hero-note { display: flex; align-items: center; gap: 9px; margin: 24px 0; color: #687564; font-size: 13px; font-weight: 700; }
+      .hero-note svg { width: 18px; color: var(--coral); }
+      .primary, .secondary { min-height: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 0 21px; border-radius: 14px; border: 1px solid transparent; font-weight: 800; cursor: pointer; transition: transform .16s, box-shadow .16s, background .16s; }
+      .primary { color: #fffdf4; background: var(--green); box-shadow: 0 4px 0 #235d4d, 0 8px 18px rgba(52, 125, 104, .16); }
+      .primary:hover { transform: translateY(-2px); background: var(--green-dark); box-shadow: 0 6px 0 #235d4d, 0 12px 21px rgba(52, 125, 104, .2); }
+      .primary:active { transform: translateY(2px); box-shadow: 0 2px 0 #235d4d; }
+      .secondary { border-color: var(--line); color: var(--ink); background: #fffaf0; }
+      .secondary:hover { background: white; }
+      .hero-art { position: relative; min-height: 385px; display: grid; place-items: center; border: 1px solid rgba(220, 207, 175, .65); border-radius: 50%; background: radial-gradient(ellipse at center, rgba(255, 250, 226, .94) 0 53%, rgba(239, 227, 194, .48) 54% 70%, transparent 71%); }
+      .hero-art::before, .hero-art::after { content: ""; position: absolute; width: 75%; height: 75%; border: 1px dashed rgba(138, 151, 119, .32); border-radius: 50%; }
+      .hero-art::after { width: 89%; height: 89%; }
+      .body-art { position: relative; z-index: 1; width: min(100%, 350px); height: auto; }
+      .sticker { position: absolute; z-index: 2; padding: 10px 15px; border-radius: 999px; border: 1px solid #e7ddc6; background: #fffdf6; box-shadow: var(--shadow); font-size: 12px; font-weight: 800; }
+      .sticker-one { right: 1%; top: 18%; transform: rotate(5deg); }
+      .sticker-two { bottom: 17%; left: 0; transform: rotate(-4deg); }
+      .facts { margin-top: 26px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 20px; padding: 19px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .fact { display: flex; align-items: center; gap: 13px; }
+      .fact-icon { width: 38px; height: 38px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 13px; color: var(--green); background: var(--green-pale); font-size: 18px; font-weight: 800; }
+      .fact:nth-of-type(3) .fact-icon { background: var(--coral-pale); color: var(--coral); }
+      .fact:nth-of-type(5) .fact-icon { background: var(--gold-pale); color: #9a7735; }
+      .fact strong, .fact span { display: block; }
+      .fact strong { font-size: 13px; }
+      .fact span { margin-top: 4px; color: #818574; font-size: 11px; }
+      .divider { height: 34px; width: 1px; background: var(--line); }
+      .footer-note { color: #8b8b76; text-align: center; font-size: 11px; margin: 23px 0 0; }
+      .game-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 24px; }
+      .game-heading h1 { font-size: clamp(32px, 4vw, 46px); margin: 15px 0 10px; }
+      .game-heading p { font-size: 14px; }
+      .progress { width: min(210px, 30%); color: #748071; font-size: 12px; font-weight: 700; }
+      .progress-track { height: 9px; margin-top: 9px; border-radius: 99px; background: #e6dcc5; overflow: hidden; }
+      .progress-fill { height: 100%; display: block; border-radius: inherit; background: var(--green); transition: width .25s; }
+      .game-layout { display: grid; grid-template-columns: 1.04fr .96fr; gap: 20px; align-items: start; }
+      .panel { border: 1px solid #e1d6bf; border-radius: 22px; padding: 22px; background: rgba(255, 253, 246, .88); box-shadow: var(--shadow); }
+      .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 17px; }
+      .panel-heading h2 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
+      .panel-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+      .round-chip, .hint-cost { padding: 7px 10px; border-radius: 99px; background: #f1ead9; color: #627264; white-space: nowrap; font-size: 11px; font-weight: 800; }
+      .slot-list { display: grid; gap: 8px; }
+      .slot { width: 100%; min-height: 58px; display: flex; align-items: center; gap: 12px; padding: 7px 11px; text-align: left; color: var(--ink); border: 1px dashed #d4cbb5; border-radius: 14px; background: #fcf8ed; cursor: pointer; transition: border .15s, background .15s, transform .15s; }
+      .slot:hover { border-color: #8cae91; background: #f7f7e9; }
+      .slot.is-selected-target { border: 2px solid var(--green); background: var(--green-pale); }
+      .slot.is-wrong { border: 2px solid #d57665; background: #fff0e9; animation: nudge .24s ease; }
+      .slot-number { width: 26px; height: 26px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 50%; background: #ece5d2; color: #687365; font-size: 12px; font-weight: 800; }
+      .slot-content { min-width: 0; display: flex; align-items: center; gap: 10px; flex: 1; }
+      .slot-content svg { width: 40px; height: 40px; flex: 0 0 auto; }
+      .slot-copy strong, .slot-copy span { display: block; }
+      .slot-copy strong { font-size: 13px; }
+      .slot-copy span, .slot-empty { color: #8b8b79; font-size: 11px; }
+      .slot-side { color: #80a28a; font-size: 18px; }
+      .message { display: flex; gap: 9px; align-items: flex-start; padding: 11px 13px; margin-top: 13px; border-radius: 12px; color: #597367; background: #eef3e6; font-size: 12px; line-height: 1.5; }
+      .message.error { color: #8c4a40; background: #fbe9e1; }
+      .message.good { color: #356e58; background: #e2f0e1; }
+      .check-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+      .check-row p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+      .check-button { min-height: 44px; padding: 0 14px; white-space: nowrap; font-size: 12px; }
+      .retry { width: 100%; margin-top: 10px; }
+      .tray-intro { display: flex; align-items: center; gap: 8px; padding: 10px 12px; margin-bottom: 13px; border-radius: 12px; color: #6c795f; background: #f5efd9; font-size: 11px; line-height: 1.45; }
+      .organ-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .organ-card { min-width: 0; padding: 8px; border: 1px solid #e5d9c3; border-radius: 16px; background: #fffdf6; transition: transform .16s, border .16s, box-shadow .16s; }
+      .organ-card:hover { transform: translateY(-2px); box-shadow: 0 7px 14px rgba(64, 71, 49, .08); }
+      .organ-card.is-selected { border: 2px solid var(--green); background: #edf4e7; }
+      .organ-card.is-hinted { border-color: #e5c979; }
+      .card-select { width: 100%; display: flex; align-items: center; gap: 9px; padding: 3px; border: 0; background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+      .card-art { width: 49px; height: 49px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 13px; background: #f8f0df; }
+      .card-art svg { width: 46px; height: 46px; }
+      .card-label { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 12px; font-weight: 800; }
+      .card-label span:first-child { overflow-wrap: anywhere; }
+      .selected-mark { width: 17px; height: 17px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 50%; color: white; background: var(--green); font-size: 11px; }
+      .clue-button { display: inline-flex; align-items: center; gap: 5px; margin: 7px 0 0 4px; padding: 5px 7px; border: 0; border-radius: 8px; color: #7e714c; background: #f7efd9; font-size: 10px; font-weight: 800; cursor: pointer; }
+      .clue-copy { margin: 6px 3px 3px; color: #657466; font-size: 10px; line-height: 1.45; }
+      .hint-note { margin: 12px 0 0; color: #888875; font-size: 10px; line-height: 1.5; }
+      .empty-tray { grid-column: 1 / -1; min-height: 130px; display: grid; place-content: center; justify-items: center; gap: 7px; text-align: center; border: 1px dashed #cfc6af; border-radius: 15px; color: #718273; font-size: 12px; }
+      .empty-tray span { color: #888875; font-size: 11px; }
+      .success-wrap { display: grid; justify-items: center; padding-top: 34px; }
+      .success-card { width: min(720px, 100%); padding: 30px; border: 1px solid var(--line); border-radius: 24px; background: rgba(255, 253, 246, .93); box-shadow: var(--shadow); text-align: center; }
+      .success-medal { width: 58px; height: 58px; display: grid; place-items: center; margin: 0 auto 15px; border-radius: 20px; color: #94702f; background: #f5e7b8; font-size: 27px; }
+      .success-card .eyebrow { justify-content: center; }
+      .success-title { margin: 13px 0 8px; font-size: 42px; }
+      .success-lead { max-width: 520px; margin: 0 auto; color: var(--muted); font-size: 14px; line-height: 1.6; }
+      .final-score { width: fit-content; display: flex; align-items: center; gap: 9px; margin: 20px auto; padding: 10px 15px; border: 1px solid #eadba9; border-radius: 999px; color: #725d30; background: #fff6d9; font-size: 13px; }
+      .learn-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 18px 0 24px; text-align: left; }
+      .learn-item { min-height: 68px; display: flex; align-items: center; gap: 11px; padding: 9px 11px; border: 1px solid #ece3d0; border-radius: 13px; background: #fffaf0; }
+      .learn-item svg { width: 42px; height: 42px; flex: 0 0 auto; }
+      .learn-item strong, .learn-item span { display: block; }
+      .learn-item strong { font-size: 12px; }
+      .learn-item span { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+      .success-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+      .success-actions .primary, .success-actions .secondary { min-height: 45px; font-size: 13px; }
+      @keyframes nudge { 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+      @media (max-width: 760px) {
+        .wrap { width: min(100% - 30px, 560px); }
+        .page { padding-top: 30px; }
+        .hero { grid-template-columns: 1fr; gap: 14px; }
+        .hero-art { min-height: 300px; width: min(100%, 440px); justify-self: center; }
+        .body-art { width: 270px; }
+        .facts { grid-template-columns: 1fr; gap: 14px; padding: 16px 0; }
+        .divider { display: none; }
+        .game-heading { align-items: flex-start; flex-direction: column; }
+        .progress { width: 100%; }
+        .game-layout { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 480px) {
+        .topbar { min-height: 66px; }
+        .brand-name { font-size: 14px; }
+        .brand-caption { font-size: 9px; }
+        .brand-mark { width: 38px; height: 38px; }
+        .hero h1 { font-size: 45px; }
+        .hero-copy > p { font-size: 14px; }
+        .hero-art { min-height: 270px; }
+        .panel { padding: 15px; border-radius: 18px; }
+        .slot { min-height: 54px; }
+        .check-row { align-items: stretch; flex-direction: column; }
+        .check-row p { font-size: 11px; }
+        .check-button { width: 100%; }
+        .learn-list { grid-template-columns: 1fr; }
+        .success-card { padding: 22px 15px; }
+        .success-title { font-size: 36px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <main class="wrap page" data-loading>
+        <section class="panel">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> Petualangan belajar</div>
+          <h1 style="font-size: 38px">Petualangan Pencernaan</h1>
+          <p style="color: var(--muted); line-height: 1.7">
+            Permainan sedang dimuat. Jika pesan ini tidak berubah, browser mungkin
+            tidak menjalankan JavaScript. Buka file ini langsung di Chrome atau Edge,
+            bukan di pratinjau teks.
+          </p>
+        </section>
+      </main>
+    </div>
+    <noscript>
+      <main class="wrap page">
+        <section class="panel">
+          <h1 style="font-size: 34px">JavaScript perlu diaktifkan</h1>
+          <p style="color: var(--muted); line-height: 1.7">
+            Permainan puzzle ini menggunakan JavaScript yang sudah disertakan di file.
+            Aktifkan JavaScript di browser, lalu buka ulang file HTML ini.
+          </p>
+        </section>
+      </main>
+    </noscript>
+    <script>
+      window.addEventListener("error", (event) => {
+        const app = document.getElementById("app");
+        if (!app || !app.querySelector("[data-loading]")) return;
+        const panel = app.querySelector(".panel");
+        panel.innerHTML = '<div class="eyebrow"><span class="eyebrow-dot"></span> Perlu diperiksa</div><h1 style="font-size: 34px">Permainan belum bisa dibuka</h1><p style="color: var(--muted); line-height: 1.7">Browser tidak berhasil menjalankan bagian permainan. Pastikan file berakhiran <strong>.html</strong> dan JavaScript diizinkan.</p><p style="color: var(--muted); font-size: 12px">Pesan browser: <code data-error></code></p>';
+        const detail = panel.querySelector("[data-error]");
+        detail.textContent = event.message || "Kesalahan JavaScript";
+      });
+      (() => {
+        "use strict";
+        const organs = [
+          { id: "mulut", name: "Mulut", art: "mouth", clue: "Di sinilah makanan pertama kali dikunyah dan bercampur dengan air liur.", fact: "Gigi mengunyah makanan. Air liur membantu membuatnya lebih lembut." },
+          { id: "kerongkongan", name: "Kerongkongan", art: "esophagus", clue: "Aku seperti jalan panjang yang mengantar makanan turun ke perut.", fact: "Ototku mendorong makanan dari mulut menuju lambung." },
+          { id: "lambung", name: "Lambung", art: "stomach", clue: "Aku kantong berotot yang mengaduk makanan dengan cairan khusus.", fact: "Aku mengaduk dan memecah makanan menjadi bagian yang lebih kecil." },
+          { id: "usus-halus", name: "Usus Halus", art: "small", clue: "Di sinilah sari makanan diserap. Bentukku panjang dan berkelok-kelok.", fact: "Aku menyerap sari makanan agar tubuh mendapat energi dan zat berguna." },
+          { id: "usus-besar", name: "Usus Besar", art: "large", clue: "Aku menyerap air dari sisa makanan sebelum menjadi kotoran.", fact: "Aku menyerap sebagian air dan membantu membentuk kotoran." },
+          { id: "anus", name: "Anus", art: "anus", clue: "Aku adalah pintu terakhir tempat kotoran keluar dari tubuh.", fact: "Aku menjadi jalan keluar kotoran dari tubuh." }
+        ];
+        const correctOrder = organs.map((organ) => organ.id);
+        const byId = Object.fromEntries(organs.map((organ) => [organ.id, organ]));
+        const state = { screen: "intro", cardOrder: [], slots: Array(6).fill(null), score: 100, hintsUsed: new Set(), revealedHints: new Set(), selected: null, feedback: null, wrong: [] };
+        const app = document.getElementById("app");
+        const icon = (name, size = 18) => {
+          const paths = {
+            arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+            down: '<path d="M12 4v16m-7-7 7 7 7-7"/>',
+            check: '<path d="m5 12 4 4L19 6"/>',
+            bulb: '<path d="M9 18h6m-5 4h4m-5-8a6 6 0 1 1 6 0c-.8.6-1 1.2-1 2h-4c0-.8-.2-1.4-1-2Z"/>',
+            spark: '<path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Zm7 11 .8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14Z"/>',
+            rotate: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5"/>',
+            trophy: '<path d="M8 21h8m-4-4v4m-6-17h12v5a6 6 0 0 1-12 0V4Zm0 3H3v2a5 5 0 0 0 5 5m8-7h5v2a5 5 0 0 1-5 5"/>',
+            star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>',
+            help: '<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.8 1.7c-1 .8-1.6 1.2-1.6 2.8m0 3h.01"/>',
+            checkcircle: '<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>'
+          };
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.spark}</svg>`;
+        };
+        const logo = `<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M19.8 4.5c-7 0-11.7 5.4-11.7 12.2 0 8.4 6.2 15.7 12 18.6 5.9-3 12-10.2 12-18.6 0-6.8-4.7-12.2-12.3-12.2Z" fill="#F8D793" stroke="#477B68" stroke-width="2"/><path d="M20.2 9.5c-
